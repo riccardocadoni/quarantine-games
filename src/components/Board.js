@@ -5,7 +5,7 @@ const Board = props => {
   const board = props.board;
   const pos = props.positions;
   return (
-    <Grid container /* spacing={1} */>
+    <Grid container >
       {board.map((col, i) => {
         let players = [];
         for (let key in pos) {
@@ -15,7 +15,7 @@ const Board = props => {
         }
         return (
           <React.Fragment key={i}>
-            <Grid item xs={3}>
+            <Grid item xs={4} md={2}>
               <Card color={col} players={players}></Card>
             </Grid>
           </React.Fragment>
@@ -31,16 +31,16 @@ const Card = props => {
   let color = '';
   switch (props.color) {
     case 0:
-      color = 'red';
+      color = 'yellow';
       break;
     case 1:
       color = 'blue';
       break;
     case 2:
-      color = 'white';
+      color = 'brown';
       break;
     case 3:
-      color = 'black';
+      color = 'pink';
       break;
     case 4:
       color = 'green';
@@ -52,8 +52,21 @@ const Card = props => {
       break;
   }
   return (
-    <div className="card" style={{ background: color }}>
-      {props.players}
-    </div>
+    <Grid container className="card" style={{ background: color }} 
+    justify="center"
+    alignItems="center"
+   >
+      {props.players.map((player,i)=>{
+        return(
+          <React.Fragment key={i}>
+          <Grid item xs={6}  className="player_in_card">
+          {player}
+          </Grid>
+        </React.Fragment>)
+        
+      })}
+   
+  </Grid>
+    
   );
 };
