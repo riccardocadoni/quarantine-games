@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext } from "react";
 import {
   Button,
   TextField,
@@ -7,38 +7,37 @@ import {
   DialogTitle,
   DialogContent,
   Grid
-} from '@material-ui/core';
-import { GameContext } from '../App';
-import { useHistory, Redirect } from 'react-router-dom';
-import firebase from '../firebase';
+} from "@material-ui/core";
+import { GameContext } from "../App";
+import { useHistory, Redirect } from "react-router-dom";
+import firebase from "../firebase";
 
 export default function Home() {
   const Game = useContext(GameContext);
   const history = useHistory();
   const nickName = Game.nickName;
-  const [textId, setTextId] = useState('');
   const [isJoinGameDialogOpen, setIsJoinGameDialogOpen] = useState(false);
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
 
   const createGame = () => {
     const id = makeId(4);
-    const gameRef = firebase.database().ref('games/' + id);
+    const gameRef = firebase.database().ref("games/" + id);
     if (nickName != null) {
       let board = [];
-      for (let i = 0; i <= 15; i++) {
+      for (let i = 0; i <= 23; i++) {
         let numb = Math.floor(Math.random() * 5);
         board.push(numb);
       }
       try {
         gameRef.set({
           creator: nickName,
-          state: 'tostart',
+          state: "tostart",
           players: [nickName],
           board: board
         });
 
         Game.setGameId(id);
-        history.push('/game');
+        history.push("/game");
       } catch (error) {
         console.log(error);
       }
@@ -46,8 +45,8 @@ export default function Home() {
   };
 
   const makeId = length => {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var result = "";
+    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     var charactersLength = characters.length;
     for (var i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -61,13 +60,10 @@ export default function Home() {
     } else setIsErrorDialogOpen(true);
   };
 
-  const handleDialogSave = () => {
+  const handleDialogSave = textId => {
     Game.setGameId(textId);
   };
 
-  const handleDialogClose = () => {
-    setIsJoinGameDialogOpen(false);
-  };
   if (Game.gameId) return <Redirect to="/game"></Redirect>;
 
   const ErrorDialog = props => {
@@ -79,18 +75,19 @@ export default function Home() {
       >
         <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
         <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
+          <Button onClick={() => setIsErrorDialogOpen(false)} color="primary">
             Ho capito..non lo faccio più :(
           </Button>
         </DialogActions>
       </Dialog>
     );
   };
-  const Dialogg = () => {
+  const InsertCodeDialog = () => {
+    const [textId, setTextId] = useState("");
     return (
       <Dialog
         open={isJoinGameDialogOpen}
-        onClose={handleDialogClose}
+        onClose={() => setIsJoinGameDialogOpen(false)}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
@@ -104,15 +101,18 @@ export default function Home() {
             label="Esempio.. KWR3"
             type="codes"
             fullWidth
-            onChange={e => setTextId(e.target.value)}
+            onChange={e => setTextId(e.target.value.toUpperCase())}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogSave} color="primary">
-            VAI!
-          </Button>
-          <Button onClick={handleDialogClose} color="secondary">
+          <Button
+            onClick={() => setIsJoinGameDialogOpen(false)}
+            color="secondary"
+          >
             Annulla
+          </Button>
+          <Button onClick={() => handleDialogSave(textId)} color="primary">
+            VAI!
           </Button>
         </DialogActions>
       </Dialog>
@@ -129,7 +129,7 @@ export default function Home() {
             margin="normal"
             required
             fullWidth
-            onChange={e => Game.setNickName(e.target.value)}
+            onChange={e => Game.setNickName(e.target.value.toUpperCase())}
             name="nickname"
             label="nickname"
             type="nickname"
@@ -138,11 +138,15 @@ export default function Home() {
           />
         </Grid>
       </Grid>
-      <Button onClick={createGame}>CREA</Button>
-      <Button onClick={joinGame}>PARTECIPA</Button>
-      <Dialogg></Dialogg>
+      <Grid justify="center" container>
+        <Grid item xs={4}>
+          <Button onClick={createGame}>CREA</Button>
+          <Button onClick={joinGame}>PARTECIPA</Button>
+        </Grid>
+      </Grid>
+      <InsertCodeDialog></InsertCodeDialog>
       <ErrorDialog
-        title={'Devi inserire un nickName per poter giocare, dai su :)'}
+        title={"Devi inserire un nickName per poter giocare, dai su :)"}
       ></ErrorDialog>
     </div>
   );
