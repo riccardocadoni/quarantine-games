@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  Grid
-} from "@material-ui/core";
+import { Button, Dialog, Grid } from "@material-ui/core";
 import { GameContext } from "../App";
 import { Redirect } from "react-router-dom";
 import firebase from "../firebase";
 import Board from "./Board";
+//components
+import QuestionDialog from "./dialogs/QuestionDialog";
+import LoadingDialog from "./dialogs/LoadingDialog";
+import ObservQuestionDialog from "./dialogs/ObservQuestionDialog";
+import ResultDialog from "./dialogs/ResultDialog";
+import WinnerDialog from "./dialogs/WinnerDialog";
+//hooks
+import { getBoardTopic } from "../utils";
+import InformationDialog from "./dialogs/InformationDialog";
 
 export default function Game() {
   const Game = useContext(GameContext);
@@ -42,6 +44,18 @@ export default function Game() {
   const [isObservQuestionDialogOpen, setIsObservQuestionDialogOpen] = useState(
     false
   );
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const boardRef = firebase.database().ref("board");
+    boardRef.once("value", function(snapshot) {
+      if (!snapshot.val()) {
+        setIsErrorDialogOpen(true);
+      } else {
+        setBoardArr(snapshot.val());
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const gameRef = firebase.database().ref("games/" + gameId);
@@ -58,7 +72,6 @@ export default function Game() {
           }
         } else setIsCreator(true);
         setCreator(snapshot.val().creator);
-        setBoardArr(snapshot.val().board);
       }
     });
   }, []);
@@ -88,7 +101,6 @@ export default function Game() {
 
   useEffect(() => {
     //se non è vuoto question
-
     if (question && Object.entries(question).length !== 0) {
       setIsQuestionDialogOpen(true);
     }
@@ -158,12 +170,16 @@ export default function Game() {
     return array;
   }
 
-  const nextToP = () => {
-    let numb = Math.floor(Math.random() * 3) + 1;
+  const rollDice = () => {
+    let numb = 6; //Math.floor(Math.random() * 3) + 1;
     let pos = positions[nickName] + numb;
     if (positions[nickName] + numb >= boardArr.length) {
       pos = boardArr.length - 1;
     }
+    updatePos(pos);
+  };
+
+  const updatePos = pos => {
     const gameRef = firebase.database().ref("games/" + gameId);
     let update = { [nickName]: pos };
     gameRef.child("positions").update(update);
@@ -181,33 +197,20 @@ export default function Game() {
   };
 
   const handleQuestion = () => {
-    setLoading(true);
+    const gameRef = firebase.database().ref("games/" + gameId);
     let myPos = positions[nickName];
     let colorNum = boardArr[myPos];
-    let topic;
-    switch (colorNum) {
-      case 0:
-        topic = 23; //history
-        break;
-      case 1:
-        topic = 22; //geogrphy
-        break;
-      case 2:
-        topic = 25; // art
-        break;
-      case 3:
-        topic = 26; //celebrities
-        break;
-      case 4:
-        topic = 17; //science also 18
-        break;
-      case 5:
-        topic = 9; // general knowledge
-        break;
-      default:
-        break;
+    if (colorNum === 6) {
+      setIsInfoDialogOpen(true);
+      myPos = myPos - 2;
+      colorNum = boardArr[myPos];
+      gameRef.child("state").set(nickName);
+      setMakeQuestionState(false);
+      updatePos(myPos);
+      return;
     }
-    const gameRef = firebase.database().ref("games/" + gameId);
+    setLoading(true);
+    let topic = getBoardTopic(colorNum);
     fetch(
       "https://opentdb.com/api.php?amount=1&type=multiple&category=" +
         topic +
@@ -222,7 +225,7 @@ export default function Game() {
           setAnswers(shuffle(answers));
           gameRef.child("question").set(res.results[0]);
           setLoading(false);
-        }
+        } // else handleQuestion();
         setLoading(false);
       });
   };
@@ -274,223 +277,88 @@ export default function Game() {
     window.location.reload();
   };
 
-  const QuestionDialog = () => {
-    let myPos = positions[nickName];
-    let colorNum = boardArr[myPos];
-    let color;
-    switch (colorNum) {
-      case 0:
-        color = "yellow";
-        break;
-      case 1:
-        color = "blue";
-        break;
-      case 2:
-        color = "brown";
-        break;
-      case 3:
-        color = "pink";
-        break;
-      case 4:
-        color = "green";
-        break;
-      case 5:
-        color = "orange";
-        break;
-      default:
-        break;
-    }
-    if (question && question.incorrect_answers) {
-      let incorrAnsw = ["daelim", ...question.incorrect_answers];
-      return (
-        <Dialog open={isQuestionDialogOpen} aria-labelledby="form-dialog-title">
-          <DialogTitle style={{ background: [color] }} id="form-dialog-title">
-            <p style={{ color: "white" }}>{atob(question.category)}</p>
-          </DialogTitle>
-          <DialogContent>{atob(question.question)}</DialogContent>
-          <DialogActions>
-            {answers.map((answ, i) => {
-              if (answ === 1) {
-                return (
-                  <Button onClick={rightAnswer} color="primary" key={i}>
-                    {atob(question.correct_answer)}
-                  </Button>
-                );
-              } else {
-                incorrAnsw.splice(0, 1);
-                return (
-                  <Button onClick={wrongAnswer} color="primary" key={i}>
-                    {atob(incorrAnsw[0])}
-                  </Button>
-                );
-              }
-            })}
-          </DialogActions>
-        </Dialog>
-      );
-    } else return null;
-  };
-
-  const WinnerDialog = () => {
-    return (
-      <Dialog
-        open={isWinnerDialogOpen}
-        onClose={() => setIsErrorDialogOpen(false)}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">
-          HA VINTO LA PARTITA {winner}!!!
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={handleCloseGame} color="primary">
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
-
-  const ResultDialog = () => {
-    let decodeAnsw = "";
-    switch (questionResult) {
-      case "right":
-        if (question.correct_answer) {
-          decodeAnsw = atob(question.correct_answer);
-        }
-        return (
-          <Dialog
-            open={isResultDialogOpen}
-            onClose={() => setIsErrorDialogOpen(false)}
-            aria-labelledby="form-dialog-title"
-          >
-            <DialogTitle id="form-dialog-title">RISPOSTA ESATTA!</DialogTitle>
-            <DialogContent>La risposta corretta è: {decodeAnsw}</DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => {
-                  setQuestion({});
-                  setIsResultDialogOpen(false);
-                }}
-                color="primary"
-              >
-                OK
-              </Button>
-            </DialogActions>
-          </Dialog>
-        );
-        break;
-      case "wrong":
-        if (question.correct_answer) {
-          decodeAnsw = atob(question.correct_answer);
-        }
-        return (
-          <Dialog
-            open={isResultDialogOpen}
-            onClose={() => setIsErrorDialogOpen(false)}
-            aria-labelledby="form-dialog-title"
-          >
-            <DialogTitle id="form-dialog-title">RISPOSTA ERRATA :(</DialogTitle>
-            <DialogContent>La risposta corretta è: {decodeAnsw}</DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => {
-                  setQuestion({});
-                  setIsResultDialogOpen(false);
-                }}
-                color="primary"
-              >
-                OK
-              </Button>
-            </DialogActions>
-          </Dialog>
-        );
-        break;
-
-      default:
-        return null;
-        break;
-    }
-  };
-
-  const ObservQuestionDialog = () => {
-    if (obQuestion.incorrect_answers) {
-      let incorrAnsw = ["daelim", ...obQuestion.incorrect_answers];
-      let playerAnswering = gameState.slice(0, -1);
-      return (
-        <Dialog
-          open={isObservQuestionDialogOpen}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">{playerAnswering}</DialogTitle>
-          <DialogContent>{atob(obQuestion.category)}</DialogContent>
-          <DialogContent>{atob(obQuestion.question)}</DialogContent>
-          <DialogActions>
-            {answers.map((answ, i) => {
-              if (answ === 1) {
-                return (
-                  <Button color="primary" key={i}>
-                    {atob(obQuestion.correct_answer)}
-                  </Button>
-                );
-              } else {
-                incorrAnsw.splice(0, 1);
-                return (
-                  <Button color="primary" key={i}>
-                    {atob(incorrAnsw[0])}
-                  </Button>
-                );
-              }
-            })}
-          </DialogActions>
-        </Dialog>
-      );
-    } else return null;
-  };
-
-  const LoadingDialog = () => {
-    return (
-      <Dialog open={loading} aria-labelledby="form-dialog-title">
-        <DialogTitle>
-          Attendi..stiamo cercando una domanda per te :)
-        </DialogTitle>
-      </Dialog>
-    );
-  };
-
   switch (gameState) {
     case "tostart":
       return (
         <div>
-          <p>Benvenuti al gioco creato da {creator}</p>
           {isCreator && gameState === "tostart" ? (
             <Grid justify="center" container>
               <Grid item xs={12}>
-                <Button variant="contained" color="primary" onClick={startGame}>
-                  START
-                </Button>
+                <h1>PREMI IL TASTO START PER INZIARE A GIOCARE</h1>
+                <h3>
+                  Aspetta che gli altri giocatori siano connessi prima di
+                  cominciare,se no rimarranno fuori!
+                </h3>
               </Grid>
               <Grid item xs={12}>
-                <h1>CODICE PER INVITARE: {gameId}</h1>
+                <h1>
+                  CODICE PER INVITARE:
+                  <span style={{ color: "orange" }}>{gameId}</span>
+                </h1>
               </Grid>
               <Grid item xs={12}>
-                <div>
+                {token ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={startGame}
+                  >
+                    START
+                  </Button>
+                ) : (
+                  <Button variant="contained" color="primary">
+                    START
+                  </Button>
+                )}
+              </Grid>
+              <Grid item xs={12}>
+                <div style={{ padding: "40px" }}>
                   Pronti per giocare:
                   {players.map((player, i) => {
-                    return <div key={i}>{player} </div>;
+                    return (
+                      <h3 style={{ color: "blue" }} key={i}>
+                        {player}{" "}
+                      </h3>
+                    );
                   })}
                 </div>
+                {/*  <Grid item xs={12}>
+                  <FormControl variant="filled" className={classes.formControl}>
+                    <InputLabel htmlFor="filled-age-native-simple">
+                      Age
+                    </InputLabel>
+                    <Select
+                      native
+                      value={state.age}
+                      onChange={handleChange}
+                      inputProps={{
+                        name: "age",
+                        id: "filled-age-native-simple"
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      <option value={10}>Ten</option>
+                      <option value={20}>Twenty</option>
+                      <option value={30}>Thirty</option>
+                    </Select>
+                  </FormControl>
+                </Grid> */}
               </Grid>
             </Grid>
           ) : (
             <Grid justify="center" container>
               <Grid item xs={12}>
-                <p>aspetta che il creatore inizi la partita :D</p>
+                <h1>ATTENDI L'INIZIO DELLA PARTITA :)</h1>
               </Grid>
               <Grid item xs={12}>
-                <div>
+                <div style={{ padding: "40px" }}>
                   Pronti per giocare:
                   {players.map((player, i) => {
-                    return <div key={i}>{player} </div>;
+                    return (
+                      <h3 style={{ color: "blue" }} key={i}>
+                        {player}{" "}
+                      </h3>
+                    );
                   })}
                 </div>
               </Grid>
@@ -518,11 +386,31 @@ export default function Game() {
       }
       return (
         <div>
-          <p>Rispondi alla domanda!</p>
+          <h1 style={{ color: "red" }}>E' IL TUO TURNO!</h1>
           <Board board={boardArr} positions={positions}></Board>
-          <QuestionDialog></QuestionDialog>
-          <ResultDialog></ResultDialog>
-          <LoadingDialog></LoadingDialog>
+          <QuestionDialog
+            question={question}
+            positions={positions}
+            boardArr={boardArr}
+            rightAnswer={rightAnswer}
+            wrongAnswer={wrongAnswer}
+            isQuestionDialogOpen={isQuestionDialogOpen}
+            nickName={nickName}
+            answers={answers}
+          ></QuestionDialog>
+          <ResultDialog
+            questionResult={questionResult}
+            question={question}
+            isResultDialogOpen={isResultDialogOpen}
+            setQuestion={setQuestion}
+            setIsErrorDialogOpen={setIsErrorDialogOpen}
+            setIsResultDialogOpen={setIsResultDialogOpen}
+          ></ResultDialog>
+          <LoadingDialog loading={loading}></LoadingDialog>
+          <InformationDialog
+            isInfoDialogOpen={isInfoDialogOpen}
+            setIsInfoDialogOpen={setIsInfoDialogOpen}
+          ></InformationDialog>
         </div>
       );
       break;
@@ -535,7 +423,7 @@ export default function Game() {
               <p>E' ora di lanciare il dado!</p>
             </Grid>
             <Grid item xs={12}>
-              <Button onClick={nextToP} color="secondary" variant="contained">
+              <Button onClick={rollDice} color="secondary" variant="contained">
                 LANCIA IL DADO!
               </Button>
             </Grid>
@@ -544,7 +432,14 @@ export default function Game() {
             </Grid>
           </Grid>
 
-          <ResultDialog></ResultDialog>
+          <ResultDialog
+            questionResult={questionResult}
+            question={question}
+            isResultDialogOpen={isResultDialogOpen}
+            setQuestion={setQuestion}
+            setIsErrorDialogOpen={setIsErrorDialogOpen}
+            setIsResultDialogOpen={setIsResultDialogOpen}
+          ></ResultDialog>
         </div>
       );
       break;
@@ -562,9 +457,27 @@ export default function Game() {
               OK
             </Button>
           </Dialog>
-          <ObservQuestionDialog></ObservQuestionDialog>
-          <ResultDialog></ResultDialog>
-          <WinnerDialog></WinnerDialog>
+          <ObservQuestionDialog
+            obQuestion={obQuestion}
+            isObservQuestionDialogOpen={isObservQuestionDialogOpen}
+            gameState={gameState}
+            answers={answers}
+          ></ObservQuestionDialog>
+          <ResultDialog
+            questionResult={questionResult}
+            question={question}
+            isResultDialogOpen={isResultDialogOpen}
+            setQuestion={setQuestion}
+            setIsErrorDialogOpen={setIsErrorDialogOpen}
+            setIsResultDialogOpen={setIsResultDialogOpen}
+          ></ResultDialog>
+          <WinnerDialog
+            isWinnerDialogOpen={isWinnerDialogOpen}
+            winner={winner}
+            handleCloseGame={handleCloseGame}
+            setIsErrorDialogOpen={setIsErrorDialogOpen}
+          ></WinnerDialog>
+          <p>Codice partita: {gameId}</p>
         </div>
       );
       break;

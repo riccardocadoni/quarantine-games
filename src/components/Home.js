@@ -23,17 +23,16 @@ export default function Home() {
     const id = makeId(4);
     const gameRef = firebase.database().ref("games/" + id);
     if (nickName != null) {
-      let board = [];
+      /*  let board = [];
       for (let i = 0; i <= 23; i++) {
         let numb = Math.floor(Math.random() * 5);
         board.push(numb);
-      }
+      } */
       try {
         gameRef.set({
           creator: nickName,
           state: "tostart",
-          players: [nickName],
-          board: board
+          players: [nickName]
         });
 
         Game.setGameId(id);
@@ -121,7 +120,7 @@ export default function Home() {
 
   return (
     <div>
-      <p>Benvenuti al gioco della quarantena! :D</p>
+      <h1 style={{ color: "red" }}>QUARANTINE'S TRIVIA</h1>
       <Grid justify="center" container>
         <Grid item xs={4}>
           <TextField
@@ -131,7 +130,7 @@ export default function Home() {
             fullWidth
             onChange={e => Game.setNickName(e.target.value.toUpperCase())}
             name="nickname"
-            label="nickname"
+            label="Inserisci il tuo nickName"
             type="nickname"
             id="nickname"
             autoComplete="current-nickname"
@@ -140,8 +139,22 @@ export default function Home() {
       </Grid>
       <Grid justify="center" container>
         <Grid item xs={4}>
-          <Button onClick={createGame}>CREA</Button>
-          <Button onClick={joinGame}>PARTECIPA</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={createGame}
+            style={{ margin: "20px" }}
+          >
+            CREA
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={joinGame}
+            style={{ margin: "20px" }}
+          >
+            PARTECIPA
+          </Button>
         </Grid>
       </Grid>
       <InsertCodeDialog></InsertCodeDialog>
