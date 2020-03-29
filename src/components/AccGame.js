@@ -35,6 +35,9 @@ export default function AccGame() {
         setLetter(snapshot.val().letter);
         setScore(snapshot.val().score);
         setEndTurn(snapshot.val().endTurn);
+        if (snapshot.val().finishButton === false) {
+          setFinishButton(snapshot.val().finishButton);
+        } else setFinishButton(true);
         if (snapshot.val().results) {
           setGeneralResult(snapshot.val().results);
         }
@@ -69,7 +72,6 @@ export default function AccGame() {
       }
     });
   }, []);
-  console.log(score);
 
   useEffect(() => {
     if (endTurn) {
@@ -137,7 +139,7 @@ export default function AccGame() {
   switch (gameState) {
     case "tostart":
       return (
-        <div>
+        <div className="sfondo_acc" style={{ position: "fixed" }}>
           {isCreator && gameState === "tostart" ? (
             <Grid justify="center" container>
               <Grid item xs={12}>
@@ -195,53 +197,73 @@ export default function AccGame() {
       break;
     case "writing":
       return (
-        <div>
-          <h1>Animali cose e città</h1>
-          <h1 style={{ color: "orange" }}>{letter}</h1>
-          <Timer
-            setIsTimeOver={setIsTimeOver}
-            setFinishButton={setFinishButton}
-          ></Timer>
-          {elements.map(el => {
-            return (
-              <Insert element={el} setResult={setResult} key={el}></Insert>
-            );
-          })}
-          {finishButton ? (
-            <Button
-              disabled
-              variant="contained"
-              color="primary"
-              style={{ margin: "40px" }}
-              onClick={() => {
-                let flag = 0;
-                let id = setInterval(() => {
-                  if (flag === 1) {
-                    setIsTimeOver(true);
-                    clearInterval(id);
-                  }
-                  flag = 1;
-                }, 10000);
-                gameRef.child("results").update({ [nickName]: result });
-                setGameState("is_time_over");
-              }}
-            >
-              FINITO
-            </Button>
-          ) : null}
+        <div className="sfondo_acc">
+          <h1 style={{ color: "white" }}>Animali cose e città</h1>
+          <Grid justify="center" container>
+            <Grid item xs={6}>
+              <h1 style={{ color: "orange" }}>LETTERA: {letter}</h1>
+            </Grid>
+            <Grid item xs={6}>
+              <Timer
+                setIsTimeOver={setIsTimeOver}
+                setFinishButton={setFinishButton}
+              ></Timer>
+            </Grid>
+            {elements.map(el => {
+              return (
+                <Grid item xs={12} md={4} key={el}>
+                  <Insert element={el} setResult={setResult} key={el}></Insert>
+                </Grid>
+              );
+            })}
+          </Grid>
+
+          <Button
+            disabled={!finishButton}
+            variant="contained"
+            color="primary"
+            style={{ margin: "40px" }}
+            onClick={() => {
+              setFinishButton(false);
+              gameRef.child("finishButton").set(false);
+              let flag = 0;
+              let id = setInterval(() => {
+                if (flag === 1) {
+                  setIsTimeOver(true);
+                  clearInterval(id);
+                }
+                flag = 1;
+              }, 5000);
+            }}
+          >
+            FINITO
+          </Button>
         </div>
       );
       break;
     case "is_time_over":
+      gameRef.child("finishButton").set(true);
       return (
-        <div>
-          <p>Animali cose e città</p>
-          <p>{letter}</p>
-          {elements.map(el => (
-            <p key={el}>
-              {el} : {result[el]}
-            </p>
-          ))}
+        <div className="sfondo">
+          <h1 style={{ color: "white" }}>Animali cose e città</h1>
+          <Grid justify="center" container>
+            <Grid item xs={6}>
+              <h1 style={{ color: "orange" }}>LETTERA: {letter}</h1>
+            </Grid>
+            {elements.map(el => (
+              <Grid item xs={12} key={el}>
+                <p
+                  style={{
+                    color: "white",
+                    fontSize: "20px",
+                    fontWeight: "bold"
+                  }}
+                >
+                  {el} : {result[el]}
+                </p>
+              </Grid>
+            ))}
+          </Grid>
           {isCreator ? (
             <Button
               variant="contained"
@@ -260,7 +282,7 @@ export default function AccGame() {
       if (generalResult) {
         let scoreBoard = calculateScoreBoard();
         return (
-          <div>
+          <div className="sfondo">
             <p>classifica</p>
             {scoreBoard.map(player => {
               return <p>{player} </p>;
@@ -284,7 +306,7 @@ export default function AccGame() {
     case "winner":
       let scoreBoard = calculateScoreBoard();
       return (
-        <div>
+        <div className="sfondo_acc">
           <p>classifica</p>
           {scoreBoard.map(player => {
             return <p>{player}</p>;
@@ -313,7 +335,7 @@ const Timer = ({ setIsTimeOver, setFinishButton }) => {
     }, 1000);
     return () => clearInterval(id);
   }, [time]);
-  return <h1 style={{ color: "red" }}>{time}</h1>;
+  return <h1 style={{ color: "white" }}>{time}</h1>;
 };
 
 const Insert = ({ element, setResult }) => {
@@ -326,7 +348,7 @@ const Insert = ({ element, setResult }) => {
   return (
     <Grid container>
       <Grid item xs={12}>
-        <h2>{element}</h2>
+        <h2 style={{ color: "white" }}>{element}</h2>
         <TextField
           variant="outlined"
           onChange={e => setText(e.target.value.toUpperCase())}
