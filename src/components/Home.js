@@ -6,16 +6,23 @@ import {
   DialogActions,
   DialogTitle,
   DialogContent,
-  Grid
+  Grid,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  FormLabel,
+  RadioGroup
 } from "@material-ui/core";
 import { GameContext } from "../App";
 import { useHistory, Redirect } from "react-router-dom";
 import firebase from "../firebase";
+import AccGame from "./AccGame";
 
 export default function Home() {
   const Game = useContext(GameContext);
   const history = useHistory();
   const nickName = Game.nickName;
+  const [game, setGame] = useState("Trivia");
   const [isJoinGameDialogOpen, setIsJoinGameDialogOpen] = useState(false);
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
 
@@ -23,13 +30,9 @@ export default function Home() {
     const id = makeId(4);
     const gameRef = firebase.database().ref("games/" + id);
     if (nickName != null) {
-      /*  let board = [];
-      for (let i = 0; i <= 23; i++) {
-        let numb = Math.floor(Math.random() * 5);
-        board.push(numb);
-      } */
       try {
         gameRef.set({
+          game: game,
           creator: nickName,
           state: "tostart",
           players: [nickName]
@@ -44,10 +47,10 @@ export default function Home() {
   };
 
   const makeId = length => {
-    var result = "";
-    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
+    let result = "";
+    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
@@ -117,6 +120,9 @@ export default function Home() {
       </Dialog>
     );
   };
+  const handleGameChange = event => {
+    setGame(event.target.value);
+  };
 
   return (
     <div>
@@ -135,6 +141,28 @@ export default function Home() {
             id="nickname"
             autoComplete="current-nickname"
           />
+        </Grid>
+        <Grid item xs={10}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Scegli il gioco</FormLabel>
+            <RadioGroup
+              aria-label="gender"
+              name="gender1"
+              value={game}
+              onChange={handleGameChange}
+            >
+              <FormControlLabel
+                value="Trivia"
+                control={<Radio />}
+                label="trivia"
+              />
+              <FormControlLabel
+                value="Acc"
+                control={<Radio />}
+                label="Animali,cose.."
+              />
+            </RadioGroup>
+          </FormControl>
         </Grid>
       </Grid>
       <Grid justify="center" container>
@@ -164,3 +192,37 @@ export default function Home() {
     </div>
   );
 }
+
+/* const updateBoard = () => {
+    const boardRef = firebase.database().ref("board1/");
+    const board = [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      0,
+      1,
+      7
+    ];
+    boardRef.set(board);
+  };
+
+  updateBoard();
+ */
