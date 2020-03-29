@@ -22,11 +22,10 @@ export default function Home() {
   const Game = useContext(GameContext);
   const history = useHistory();
   const nickName = Game.nickName;
-  const [game, setGame] = useState("Trivia");
   const [isJoinGameDialogOpen, setIsJoinGameDialogOpen] = useState(false);
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
 
-  const createGame = () => {
+  const createGame = game => {
     const id = makeId(4);
     const gameRef = firebase.database().ref("games/" + id);
     if (nickName != null) {
@@ -120,15 +119,36 @@ export default function Home() {
       </Dialog>
     );
   };
-  const handleGameChange = event => {
-    setGame(event.target.value);
+
+  const CreateTrivia = () => {
+    return (
+      <div className="create_trivia" onClick={() => createGame("Trivia")}>
+        <h2>TRIVIA</h2>
+      </div>
+    );
+  };
+  const CreateAcc = () => {
+    return (
+      <div className="create_trivia" onClick={() => createGame("Acc")}>
+        <h2>
+          ANIMALI,<br></br>COSE..
+        </h2>
+      </div>
+    );
+  };
+  const JoinGame = () => {
+    return (
+      <div className="create_trivia" onClick={joinGame}>
+        <h2>PARTECIPA</h2>
+      </div>
+    );
   };
 
   return (
-    <div>
-      <h1 style={{ color: "red" }}>QUARANTINE'S TRIVIA</h1>
+    <div className="sfondo">
+      <h1 style={{ color: "white" }}>QUARANTINE'S GAMES</h1>
       <Grid justify="center" container>
-        <Grid item xs={4}>
+        <Grid item xs={4} style={{ marginTop: "20px" }}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -142,47 +162,21 @@ export default function Home() {
             autoComplete="current-nickname"
           />
         </Grid>
-        <Grid item xs={10}>
-          <FormControl component="fieldset">
-            <FormLabel component="legend">Scegli il gioco</FormLabel>
-            <RadioGroup
-              aria-label="gender"
-              name="gender1"
-              value={game}
-              onChange={handleGameChange}
-            >
-              <FormControlLabel
-                value="Trivia"
-                control={<Radio />}
-                label="trivia"
-              />
-              <FormControlLabel
-                value="Acc"
-                control={<Radio />}
-                label="Animali,cose.."
-              />
-            </RadioGroup>
-          </FormControl>
-        </Grid>
       </Grid>
-      <Grid justify="center" container>
-        <Grid item xs={4}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={createGame}
-            style={{ margin: "20px" }}
-          >
-            CREA
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={joinGame}
-            style={{ margin: "20px" }}
-          >
-            PARTECIPA
-          </Button>
+      <Grid
+        justify="center"
+        container
+        spacing={1}
+        style={{ marginTop: "20px" }}
+      >
+        <Grid item xs={12} md={3}>
+          <CreateTrivia></CreateTrivia>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <CreateAcc></CreateAcc>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <JoinGame></JoinGame>
         </Grid>
       </Grid>
       <InsertCodeDialog></InsertCodeDialog>

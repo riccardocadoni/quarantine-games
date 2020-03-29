@@ -10,7 +10,6 @@ import ErrorDialog from "./dialogs/ErrorDialog";
 export default function Game() {
   const Game = useContext(GameContext);
   const gameId = Game.gameId;
-  const nickName = Game.nickName;
 
   const [game, setGame] = useState();
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
