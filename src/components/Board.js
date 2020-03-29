@@ -33,7 +33,7 @@ const Card = props => {
   let color = getBoardCard(props.color);
 
   if (color === "last") {
-    color = "orange";
+    color = "brown";
     return (
       <Grid
         container
@@ -64,19 +64,29 @@ const Card = props => {
       justify="center"
       alignItems="center"
     >
-      {color === "grey" ? (
-        <h1 style={{ color: "white" }}>-2</h1>
-      ) : (
-        props.players.map((player, i) => {
-          return (
-            <React.Fragment key={i}>
-              <Grid item xs={6} className="player_in_card">
-                {player}
-              </Grid>
-            </React.Fragment>
-          );
-        })
-      )}
+      {props.players.map((player, i) => {
+        return (
+          <React.Fragment key={i}>
+            <Grid item xs={6} className="player_in_card">
+              {player}
+            </Grid>
+          </React.Fragment>
+        );
+      })}
     </Grid>
   );
 };
+
+/* {color === "grey" ? (
+  <h1 style={{ color: "white" }}>-2</h1>
+) : (
+  props.players.map((player, i) => {
+    return (
+      <React.Fragment key={i}>
+        <Grid item xs={6} className="player_in_card">
+          {player}
+        </Grid>
+      </React.Fragment>
+    );
+  })
+)} */

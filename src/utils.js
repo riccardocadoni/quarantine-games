@@ -31,6 +31,16 @@ export function getBoardCard(colorNum) {
   return color;
 }
 
+export function getDifficulty(pos) {
+  if (pos <= 9) {
+    return "easy";
+  }
+  if (pos <= 18) {
+    return "medium";
+  }
+  return "hard";
+}
+
 export function getBoardTopic(colorNum) {
   let topic;
   switch (colorNum) {
@@ -38,7 +48,7 @@ export function getBoardTopic(colorNum) {
       topic = 23; //history
       break;
     case 1:
-      topic = 12; // music //22; //geogrphy
+      topic = 22; //geogrphy
       break;
     case 2:
       topic = 11; // film
@@ -47,11 +57,13 @@ export function getBoardTopic(colorNum) {
       topic = 20; //mithology
       break;
     case 4:
-      topic = 32; //cartoon //17; //science also 18
+      topic = 17; //science also 18
       break;
     case 5:
       topic = 9; // general knowledge
       break;
+    case 6:
+      topic = 12; // music // 15 videogames
     default:
       break;
   }
