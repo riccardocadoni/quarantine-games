@@ -11,7 +11,22 @@ import {
 import { GameContext } from "../App";
 import { useHistory, Redirect } from "react-router-dom";
 import firebase from "../firebase";
-import AccGame from "./AccGame";
+const [props1, set1] = useSpring(() => ({
+  xys: [0, 0, 1],
+  config: { mass: 5, tension: 350, friction: 40 }
+}));
+const [props2, set2] = useSpring(() => ({
+  xys: [0, 0, 1],
+  config: { mass: 5, tension: 350, friction: 40 }
+}));
+const [props3, set3] = useSpring(() => ({
+  xys: [0, 0, 1],
+  config: { mass: 5, tension: 350, friction: 40 }
+}));
+const [props4, set4] = useSpring(() => ({
+  xys: [0, 0, 1],
+  config: { mass: 5, tension: 350, friction: 40 }
+}));
 
 export default function Home() {
   const Game = useContext(GameContext);
