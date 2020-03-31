@@ -84,7 +84,7 @@ export default function AccGame() {
     if (isTimeOver) {
       gameRef.child("results").update({ [nickName]: result });
       gameRef.child("endTurn").set(true);
-      gameRef.child("state").set("is_time_over");
+      gameRef.child("state").set("correction");
       setIsTimeOver(false);
     }
   }, [isTimeOver]);
@@ -241,51 +241,19 @@ export default function AccGame() {
         </div>
       );
       break;
-    case "is_time_over":
-      gameRef.child("finishButton").set(true);
-      return (
-        <div className="sfondo">
-          <h1 style={{ color: "white" }}>Animali cose e città</h1>
-          <Grid justify="center" container>
-            <Grid item xs={6}>
-              <h1 style={{ color: "orange" }}>LETTERA: {letter}</h1>
-            </Grid>
-            {elements.map(el => (
-              <Grid item xs={12} key={el}>
-                <p
-                  style={{
-                    color: "white",
-                    fontSize: "20px",
-                    fontWeight: "bold"
-                  }}
-                >
-                  {el} : {result[el]}
-                </p>
-              </Grid>
-            ))}
-          </Grid>
-          {isCreator ? (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => {
-                gameRef.child("state").set("correction");
-              }}
-            >
-              QUANDO TUTTI SONO PRONTI
-            </Button>
-          ) : null}
-        </div>
-      );
-      break;
     case "correction":
+      gameRef.child("finishButton").set(true);
       if (generalResult) {
         let scoreBoard = calculateScoreBoard();
         return (
           <div className="sfondo">
-            <p>classifica</p>
+            <h1 style={{ color: "white" }}>CLASSIFICA</h1>
             {scoreBoard.map(player => {
-              return <p>{player} </p>;
+              return (
+                <p style={{ color: "white" }}>
+                  {player[0]} : {player[1]}
+                </p>
+              );
             })}
             <ResultTable
               elements={elements}
@@ -295,7 +263,14 @@ export default function AccGame() {
               addPoint={addPoint}
             ></ResultTable>
             {isCreator ? (
-              <Button onClick={nextRound}>Prossimo Round</Button>
+              <Button
+                style={{ marginTop: "50px" }}
+                onClick={nextRound}
+                variant="contained"
+                color="secondary"
+              >
+                Prossimo Round
+              </Button>
             ) : null}
           </div>
         );

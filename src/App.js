@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   Redirect
-} from 'react-router-dom';
-import Game from './components/Game';
-import { routes } from './routes/routes';
-import { Container } from '@material-ui/core';
-import './App.css';
+} from "react-router-dom";
+import Game from "./components/Game";
+import { routes } from "./routes/routes";
+import { Container } from "@material-ui/core";
+import "./App.css";
 
 export const GameContext = React.createContext(null);
 
@@ -23,8 +23,8 @@ function App() {
             {gameId ? (
               <Switch>
                 <Route
-                  key={'/game'}
-                  path={'/game'}
+                  key={"/game"}
+                  path={"/game"}
                   exact={true}
                   component={() => <Game />}
                 />
@@ -51,4 +51,3 @@ function App() {
 }
 
 export default App;
-
