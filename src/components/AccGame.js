@@ -136,43 +136,61 @@ export default function AccGame() {
     gameRef.child("score").update({ [player]: updatedScore });
   };
 
+  const handleCloseGame = () => {
+    if (isCreator) {
+      firebase
+        .database()
+        .ref("games/" + gameId)
+        .remove();
+    }
+    window.location.reload();
+  };
+
   switch (gameState) {
     case "tostart":
       return (
         <div className="sfondo_acc" style={{ position: "fixed" }}>
           {isCreator && gameState === "tostart" ? (
-            <Grid justify="center" container>
-              <Grid item xs={12}>
-                <h1>PREMI IL TASTO START PER INZIARE A GIOCARE</h1>
-                <h3>
-                  Aspetta che gli altri giocatori siano connessi prima di
-                  cominciare,se no rimarranno fuori!
-                </h3>
+            <React.Fragment>
+              <Grid justify="center" container>
+                <Grid item xs={12}>
+                  <h1 style={{ color: "white" }}>
+                    PREMI IL TASTO START PER INZIARE A GIOCARE
+                  </h1>
+                  <h3 style={{ color: "white" }}>
+                    Aspetta che gli altri giocatori siano connessi prima di
+                    cominciare,se no rimarranno fuori!
+                  </h3>
+                </Grid>
+                <Grid item xs={12}>
+                  <h1 style={{ color: "white" }}>
+                    CODICE PER INVITARE:
+                    <span style={{ color: "orange" }}>{gameId}</span>
+                  </h1>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={startGame}
+                  >
+                    START
+                  </Button>
+                </Grid>
+                <Grid item xs={12}>
+                  <div style={{ padding: "40px", color: "white" }}>
+                    Pronti per giocare:
+                    {players.map((player, i) => {
+                      return (
+                        <h3 style={{ color: "orange" }} key={i}>
+                          {player}
+                        </h3>
+                      );
+                    })}
+                  </div>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <h1>
-                  CODICE PER INVITARE:
-                  <span style={{ color: "orange" }}>{gameId}</span>
-                </h1>
-              </Grid>
-              <Grid item xs={12}>
-                <Button variant="contained" color="primary" onClick={startGame}>
-                  START
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <div style={{ padding: "40px" }}>
-                  Pronti per giocare:
-                  {players.map((player, i) => {
-                    return (
-                      <h3 style={{ color: "blue" }} key={i}>
-                        {player}{" "}
-                      </h3>
-                    );
-                  })}
-                </div>
-              </Grid>
-            </Grid>
+            </React.Fragment>
           ) : (
             <Grid justify="center" container>
               <Grid item xs={12}>
@@ -282,10 +300,22 @@ export default function AccGame() {
       let scoreBoard = calculateScoreBoard();
       return (
         <div className="sfondo_acc">
-          <p>classifica</p>
+          <h1 style={{ color: "white" }}>HA VINTO {scoreBoard[0][0]}</h1>
+          <h1 style={{ color: "white" }}>CLASSIFICA</h1>
           {scoreBoard.map(player => {
-            return <p>{player}</p>;
+            return (
+              <p style={{ color: "white" }}>
+                {player[0]} : {player[1]}
+              </p>
+            );
           })}
+          <Button
+            onClick={handleCloseGame}
+            variant="contained"
+            color=" secondary"
+          >
+            NUOVA PARTITA
+          </Button>
         </div>
       );
       break;
