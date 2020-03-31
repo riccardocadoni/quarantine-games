@@ -11,22 +11,15 @@ import {
 import { GameContext } from "../App";
 import { useHistory, Redirect } from "react-router-dom";
 import firebase from "../firebase";
-const [props1, set1] = useSpring(() => ({
-  xys: [0, 0, 1],
-  config: { mass: 5, tension: 350, friction: 40 }
-}));
-const [props2, set2] = useSpring(() => ({
-  xys: [0, 0, 1],
-  config: { mass: 5, tension: 350, friction: 40 }
-}));
-const [props3, set3] = useSpring(() => ({
-  xys: [0, 0, 1],
-  config: { mass: 5, tension: 350, friction: 40 }
-}));
-const [props4, set4] = useSpring(() => ({
-  xys: [0, 0, 1],
-  config: { mass: 5, tension: 350, friction: 40 }
-}));
+import { useSpring, animated } from "react-spring";
+
+const calc = (x, y) => [
+  -(y - window.innerHeight / 2) / 20,
+  (x - window.innerWidth / 2) / 20,
+  1.1
+];
+const trans = (x, y, s) =>
+  `perspective(600px) rotateX(${x}deg) rotateY(${y}deg) scale(${s})`;
 
 export default function Home() {
   const Game = useContext(GameContext);
@@ -34,6 +27,23 @@ export default function Home() {
   const nickName = Game.nickName;
   const [isJoinGameDialogOpen, setIsJoinGameDialogOpen] = useState(false);
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
+
+  const [props1, set1] = useSpring(() => ({
+    xys: [0, 0, 1],
+    config: { mass: 5, tension: 350, friction: 40 }
+  }));
+  const [props2, set2] = useSpring(() => ({
+    xys: [0, 0, 1],
+    config: { mass: 5, tension: 350, friction: 40 }
+  }));
+  const [props3, set3] = useSpring(() => ({
+    xys: [0, 0, 1],
+    config: { mass: 5, tension: 350, friction: 40 }
+  }));
+  const [props4, set4] = useSpring(() => ({
+    xys: [0, 0, 1],
+    config: { mass: 5, tension: 350, friction: 40 }
+  }));
 
   const createGame = game => {
     const id = makeId(4);
@@ -173,20 +183,39 @@ export default function Home() {
           />
         </Grid>
       </Grid>
-      <Grid
-        justify="center"
-        container
-        spacing={1}
-        style={{ marginTop: "20px" }}
-      >
+      <Grid justify="center" container style={{ marginTop: "20px" }}>
         <Grid item xs={12} md={3}>
-          <CreateTrivia></CreateTrivia>
+          <animated.div
+            onMouseMove={({ clientX: x, clientY: y }) =>
+              set1({ xys: calc(x, y) })
+            }
+            onMouseLeave={() => set1({ xys: [0, 0, 1] })}
+            style={{ transform: props1.xys.interpolate(trans) }}
+          >
+            <CreateTrivia></CreateTrivia>
+          </animated.div>
         </Grid>
         <Grid item xs={12} md={3}>
-          <CreateAcc></CreateAcc>
+          <animated.div
+            onMouseMove={({ clientX: x, clientY: y }) =>
+              set2({ xys: calc(x, y) })
+            }
+            onMouseLeave={() => set2({ xys: [0, 0, 1] })}
+            style={{ transform: props2.xys.interpolate(trans) }}
+          >
+            <CreateAcc></CreateAcc>
+          </animated.div>
         </Grid>
         <Grid item xs={12} md={3}>
-          <JoinGame></JoinGame>
+          <animated.div
+            onMouseMove={({ clientX: x, clientY: y }) =>
+              set3({ xys: calc(x, y) })
+            }
+            onMouseLeave={() => set3({ xys: [0, 0, 1] })}
+            style={{ transform: props3.xys.interpolate(trans) }}
+          >
+            <JoinGame></JoinGame>
+          </animated.div>
         </Grid>
       </Grid>
       <InsertCodeDialog></InsertCodeDialog>
