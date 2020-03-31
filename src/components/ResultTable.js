@@ -17,6 +17,8 @@ export default function ResultTable({
 }) {
   const leftClick = (player, e) => {
     if (e.target.style.background === "green") {
+      e.target.style.background = "";
+      addPoint(player, -10);
       return;
     }
     if (e.target.style.background === "red") {
@@ -31,6 +33,8 @@ export default function ResultTable({
       return;
     }
     if (e.target.style.background === "red") {
+      e.target.style.background = "";
+      addPoint(player, -5);
       return;
     }
     e.target.style.background = "red";
@@ -67,6 +71,7 @@ export default function ResultTable({
                       leftClick(player, e);
                     }}
                     onContextMenu={e => {
+                      e.preventDefault();
                       rightClick(player, e);
                     }}
                   >

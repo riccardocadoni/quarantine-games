@@ -6,12 +6,7 @@ import {
   DialogActions,
   DialogTitle,
   DialogContent,
-  Grid,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  FormLabel,
-  RadioGroup
+  Grid
 } from "@material-ui/core";
 import { GameContext } from "../App";
 import { useHistory, Redirect } from "react-router-dom";
