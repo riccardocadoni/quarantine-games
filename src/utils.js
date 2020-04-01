@@ -2,19 +2,19 @@ export function getBoardCard(colorNum) {
   let color = "";
   switch (colorNum) {
     case 0:
-      color = "yellow";
+      color = "#ffcc00";
       break;
     case 1:
       color = "blue";
       break;
     case 2:
-      color = "brown";
+      color = "tomato";
       break;
     case 3:
-      color = "pink";
+      color = "violet";
       break;
     case 4:
-      color = "green";
+      color = "mediumSeaGreen";
       break;
     case 5:
       color = "orange";

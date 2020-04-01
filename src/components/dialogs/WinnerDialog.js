@@ -16,7 +16,7 @@ const WinnerDialog = ({
         HA VINTO LA PARTITA {winner}!!!
       </DialogTitle>
       <DialogActions>
-        <Button onClick={handleCloseGame} color="primary">
+        <Button onClick={handleCloseGame} variant="contained" color="primary">
           OK
         </Button>
       </DialogActions>
