@@ -3,7 +3,7 @@ import { Grid } from "@material-ui/core";
 //hooks
 import { getBoardCard } from "../utils";
 
-const Board = props => {
+const Board = (props) => {
   const board = props.board;
   const pos = props.positions;
   return (
@@ -29,11 +29,11 @@ const Board = props => {
 
 export default Board;
 
-const Card = props => {
+const Card = (props) => {
   let color = getBoardCard(props.color);
 
   if (color === "last") {
-    color = "brown";
+    color = "tomato";
     return (
       <Grid
         container
