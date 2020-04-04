@@ -165,7 +165,7 @@ export default function AccGame() {
                 <Grid item xs={12}>
                   <h1 style={{ color: "white" }}>
                     CODICE PER INVITARE:
-                    <span style={{ color: "orange" }}>{gameId}</span>
+                    <span style={{ color: "orange" }}> {gameId}</span>
                   </h1>
                 </Grid>
                 <Grid item xs={12}>
@@ -264,7 +264,7 @@ export default function AccGame() {
       if (generalResult) {
         let scoreBoard = calculateScoreBoard();
         return (
-          <div className="sfondo">
+          <div className="sfondo_acc">
             <h1 style={{ color: "white" }}>CLASSIFICA</h1>
             {scoreBoard.map(player => {
               return (
@@ -279,6 +279,7 @@ export default function AccGame() {
               generalResult={generalResult}
               isCreator={isCreator}
               addPoint={addPoint}
+              gameRef={gameRef}
             ></ResultTable>
             {isCreator ? (
               <Button
@@ -320,7 +321,11 @@ export default function AccGame() {
       );
       break;
     default:
-      return <p>default</p>;
+      return (
+        <div className="sfondo">
+          <h1 style={{ color: "white" }}>LOADING..</h1>
+        </div>
+      );
       break;
   }
 }
@@ -347,7 +352,7 @@ const Insert = ({ element, setResult }) => {
   const [text, setText] = useState("");
   useEffect(() => {
     setResult(result => {
-      return { ...result, [element]: text };
+      return { ...result, [element]: [text, 0] };
     });
   }, [text]);
   return (

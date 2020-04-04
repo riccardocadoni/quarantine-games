@@ -22,9 +22,9 @@ export function getBoardCard(colorNum) {
     case 6:
       color = "grey";
       break;
-    case 7:
+    /*  case 7:
       color = "last";
-      break;
+      break; */
     default:
       break;
   }
@@ -64,6 +64,10 @@ export function getBoardTopic(colorNum) {
       break;
     case 6:
       topic = 12; // music // 15 videogames
+      break;
+    /*  case 7:
+      topic = 11; // film
+      break; */
     default:
       break;
   }

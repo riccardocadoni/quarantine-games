@@ -47,7 +47,7 @@ export default function TriviaGame() {
 
   useEffect(() => {
     const boardRef = firebase.database().ref("board1");
-    boardRef.once("value", function(snapshot) {
+    boardRef.once("value", function (snapshot) {
       if (!snapshot.val()) {
         setIsErrorDialogOpen(true);
       } else {
@@ -58,7 +58,7 @@ export default function TriviaGame() {
 
   useEffect(() => {
     const gameRef = firebase.database().ref("games/" + gameId);
-    gameRef.once("value", function(snapshot) {
+    gameRef.once("value", function (snapshot) {
       if (!snapshot.val()) {
         setIsErrorDialogOpen(true);
       } else {
@@ -77,15 +77,15 @@ export default function TriviaGame() {
 
   useEffect(() => {
     const gameRef = firebase.database().ref("games/" + gameId);
-    gameRef.on("value", function(snapshot) {
+    gameRef.on("value", function (snapshot) {
       if (!snapshot.val()) {
         setIsErrorDialogOpen(true);
       } else {
         setGameState(snapshot.val().state);
         setPlayers(snapshot.val().players);
+        setPositions(snapshot.val().positions);
         if (snapshot.val().playersQueque) {
           setPlayersQueque(snapshot.val().playersQueque);
-          setPositions(snapshot.val().positions);
         }
         if (snapshot.val().winner) {
           setWinner(snapshot.val().winner);
@@ -120,8 +120,8 @@ export default function TriviaGame() {
 
   useEffect(() => {
     fetch("https://opentdb.com/api_token.php?command=request")
-      .then(res => res.json())
-      .then(res => setToken(res.token));
+      .then((res) => res.json())
+      .then((res) => setToken(res.token));
   }, []);
 
   useEffect(() => {
@@ -134,7 +134,7 @@ export default function TriviaGame() {
     const gameRef = firebase.database().ref("games/" + gameId);
     let shuffled = shuffle(players);
     let positions = {};
-    shuffled.map(player => {
+    shuffled.map((player) => {
       positions[player] = 0;
     });
     gameRef.child("playersQueque").set(shuffled);
@@ -171,7 +171,7 @@ export default function TriviaGame() {
     updatePos(pos);
   };
 
-  const updatePos = pos => {
+  const updatePos = (pos) => {
     const gameRef = firebase.database().ref("games/" + gameId);
     let update = { [nickName]: pos };
     gameRef.child("positions").update(update);
@@ -213,8 +213,8 @@ export default function TriviaGame() {
         "&token=" +
         token
     )
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         if (res.results[0]) {
           setQuestion(res.results[0]);
           setAnswers(shuffle(answers));

@@ -13,31 +13,52 @@ export default function ResultTable({
   elements,
   generalResult,
   isCreator,
-  addPoint
+  addPoint,
+  gameRef
 }) {
-  const leftClick = (player, e) => {
+  const leftClick = (player, el, e) => {
     if (e.target.style.background === "green") {
       e.target.style.background = "";
+      gameRef
+        .child("results")
+        .child(player)
+        .child(el)
+        .update({ 1: 0 });
       addPoint(player, -10);
       return;
     }
-    if (e.target.style.background === "red") {
+    if (e.target.style.background === "orange") {
       return;
     }
     e.target.style.background = "green";
+    gameRef
+      .child("results")
+      .child(player)
+      .child(el)
+      .update({ 1: 10 });
     addPoint(player, 10);
   };
 
-  const rightClick = (player, e) => {
+  const rightClick = (player, el, e) => {
     if (e.target.style.background === "green") {
       return;
     }
-    if (e.target.style.background === "red") {
+    if (e.target.style.background === "orange") {
       e.target.style.background = "";
+      gameRef
+        .child("results")
+        .child(player)
+        .child(el)
+        .update({ 1: 0 });
       addPoint(player, -5);
       return;
     }
-    e.target.style.background = "red";
+    e.target.style.background = "orange";
+    gameRef
+      .child("results")
+      .child(player)
+      .child(el)
+      .update({ 1: 5 });
     addPoint(player, 5);
   };
 
@@ -63,23 +84,47 @@ export default function ResultTable({
                 {player}
               </TableCell>
               {elements.map(el => {
+                let color = "";
+                if (
+                  generalResult[player] &&
+                  generalResult[player][el] &&
+                  generalResult[player][el][1] === 10
+                ) {
+                  color = "green";
+                }
+                if (
+                  generalResult[player] &&
+                  generalResult[player][el] &&
+                  generalResult[player][el][1] === 5
+                ) {
+                  color = "orange";
+                }
                 return isCreator ? (
                   <TableCell
                     align="right"
                     key={el}
+                    style={{ background: color }}
                     onClick={e => {
-                      leftClick(player, e);
+                      leftClick(player, el, e);
                     }}
                     onContextMenu={e => {
                       e.preventDefault();
-                      rightClick(player, e);
+                      rightClick(player, el, e);
                     }}
                   >
-                    {generalResult[player] ? generalResult[player][el] : null}
+                    {generalResult[player] && generalResult[player][el]
+                      ? generalResult[player][el][0]
+                      : null}
                   </TableCell>
                 ) : (
-                  <TableCell align="right" key={el}>
-                    {generalResult[player] ? generalResult[player][el] : null}
+                  <TableCell
+                    align="right"
+                    key={el}
+                    style={{ background: color }}
+                  >
+                    {generalResult[player] && generalResult[player][el]
+                      ? generalResult[player][el][0]
+                      : null}
                   </TableCell>
                 );
               })}
