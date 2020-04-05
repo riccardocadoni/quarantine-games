@@ -6,7 +6,7 @@ import {
   DialogActions,
   DialogTitle,
   DialogContent,
-  Grid
+  Grid,
 } from "@material-ui/core";
 import { GameContext } from "../App";
 import { useHistory, Redirect } from "react-router-dom";
@@ -16,7 +16,7 @@ import { useSpring, animated } from "react-spring";
 const calc = (x, y) => [
   -(y - window.innerHeight / 2) / 20,
   (x - window.innerWidth / 2) / 20,
-  1.1
+  1.1,
 ];
 const trans = (x, y, s) =>
   `perspective(600px) rotateX(${x}deg) rotateY(${y}deg) scale(${s})`;
@@ -30,31 +30,28 @@ export default function Home() {
 
   const [props1, set1] = useSpring(() => ({
     xys: [0, 0, 1],
-    config: { mass: 5, tension: 350, friction: 40 }
+    config: { mass: 5, tension: 350, friction: 40 },
   }));
   const [props2, set2] = useSpring(() => ({
     xys: [0, 0, 1],
-    config: { mass: 5, tension: 350, friction: 40 }
+    config: { mass: 5, tension: 350, friction: 40 },
   }));
   const [props3, set3] = useSpring(() => ({
     xys: [0, 0, 1],
-    config: { mass: 5, tension: 350, friction: 40 }
-  }));
-  const [props4, set4] = useSpring(() => ({
-    xys: [0, 0, 1],
-    config: { mass: 5, tension: 350, friction: 40 }
+    config: { mass: 5, tension: 350, friction: 40 },
   }));
 
-  const createGame = game => {
-    const id = makeId(4);
-    const gameRef = firebase.database().ref("games/" + id);
-    if (nickName != null) {
+  const createGame = (game) => {
+    if (nickName != null && nickName != "") {
+      const id = makeId(4);
+      const gameRef = firebase.database().ref("games/" + id);
       try {
         gameRef.set({
           game: game,
           creator: nickName,
           state: "tostart",
-          players: [nickName]
+          players: [nickName],
+          time_stamp: firebase.database.ServerValue.TIMESTAMP,
         });
 
         Game.setGameId(id);
@@ -65,7 +62,7 @@ export default function Home() {
     } else setIsErrorDialogOpen(true);
   };
 
-  const makeId = length => {
+  const makeId = (length) => {
     let result = "";
     let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let charactersLength = characters.length;
@@ -76,18 +73,18 @@ export default function Home() {
   };
 
   const joinGame = () => {
-    if (nickName != null) {
+    if (nickName != null && nickName != "") {
       setIsJoinGameDialogOpen(true);
     } else setIsErrorDialogOpen(true);
   };
 
-  const handleDialogSave = textId => {
+  const handleDialogSave = (textId) => {
     Game.setGameId(textId);
   };
 
   if (Game.gameId) return <Redirect to="/game"></Redirect>;
 
-  const ErrorDialog = props => {
+  const ErrorDialog = (props) => {
     return (
       <Dialog
         open={isErrorDialogOpen}
@@ -122,7 +119,7 @@ export default function Home() {
             label="Esempio.. KWR3"
             type="codes"
             fullWidth
-            onChange={e => setTextId(e.target.value.toUpperCase())}
+            onChange={(e) => setTextId(e.target.value.toUpperCase())}
           />
         </DialogContent>
         <DialogActions>
@@ -143,7 +140,7 @@ export default function Home() {
   const CreateTrivia = () => {
     return (
       <div className="create_trivia" onClick={() => createGame("Trivia")}>
-        <h2>TRIVIA</h2>
+        <h2>TRIVIAL QUIZZ</h2>
       </div>
     );
   };
@@ -151,15 +148,15 @@ export default function Home() {
     return (
       <div className="create_trivia" onClick={() => createGame("Acc")}>
         <h2>
-          ANIMALI,<br></br>COSE..
+          ANIMALS,<br></br>THINGS..
         </h2>
       </div>
     );
   };
   const JoinGame = () => {
     return (
-      <div className="create_trivia" onClick={joinGame}>
-        <h2>PARTECIPA</h2>
+      <div className="join_game" onClick={joinGame}>
+        <h2>JOIN A GAME</h2>
       </div>
     );
   };
@@ -174,7 +171,7 @@ export default function Home() {
             margin="normal"
             required
             fullWidth
-            onChange={e => Game.setNickName(e.target.value.toUpperCase())}
+            onChange={(e) => Game.setNickName(e.target.value.toUpperCase())}
             name="nickname"
             label="Inserisci il tuo nickName"
             type="nickname"

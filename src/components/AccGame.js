@@ -26,7 +26,7 @@ export default function AccGame() {
   const [finishButton, setFinishButton] = useState(true);
 
   useEffect(() => {
-    gameRef.on("value", function(snapshot) {
+    gameRef.on("value", function (snapshot) {
       if (!snapshot.val()) {
         console.log("error di qualche genere");
       } else {
@@ -46,7 +46,7 @@ export default function AccGame() {
   }, []);
   useEffect(() => {
     const gameRef = firebase.database().ref("/elements");
-    gameRef.once("value", function(snapshot) {
+    gameRef.once("value", function (snapshot) {
       if (!snapshot.val()) {
         console.log("errroe di qulche genere");
       } else {
@@ -56,7 +56,7 @@ export default function AccGame() {
   }, []);
   useEffect(() => {
     const gameRef = firebase.database().ref("games/" + gameId);
-    gameRef.once("value", function(snapshot) {
+    gameRef.once("value", function (snapshot) {
       if (!snapshot.val()) {
         console.log("errroe di qulche genere");
         //setIsErrorDialogOpen(true);
@@ -94,7 +94,7 @@ export default function AccGame() {
     for (let player in score) {
       scoreBoard.push([player, score[player]]);
     }
-    scoreBoard.sort(function(a, b) {
+    scoreBoard.sort(function (a, b) {
       return a[1] - b[1];
     });
     return scoreBoard.reverse();
@@ -107,7 +107,7 @@ export default function AccGame() {
   const startGame = () => {
     let lett = getLetter();
     gameRef.child("letter").set(lett);
-    players.map(player => {
+    players.map((player) => {
       gameRef.child("score").update({ [player]: 0 });
       gameRef.child("results").update({ [player]: "res" });
     });
@@ -116,7 +116,7 @@ export default function AccGame() {
 
   const nextRound = () => {
     let lett = getLetter();
-    setRound(round => round + 1);
+    setRound((round) => round + 1);
     setFinishButton(true);
     gameRef.child("letter").set(lett);
     gameRef.child("state").set("writing");
@@ -227,7 +227,7 @@ export default function AccGame() {
                 setFinishButton={setFinishButton}
               ></Timer>
             </Grid>
-            {elements.map(el => {
+            {elements.map((el) => {
               return (
                 <Grid item xs={12} md={4} key={el}>
                   <Insert element={el} setResult={setResult} key={el}></Insert>
@@ -266,7 +266,7 @@ export default function AccGame() {
         return (
           <div className="sfondo_acc">
             <h1 style={{ color: "white" }}>CLASSIFICA</h1>
-            {scoreBoard.map(player => {
+            {scoreBoard.map((player) => {
               return (
                 <p style={{ color: "white" }}>
                   {player[0]} : {player[1]}
@@ -303,7 +303,7 @@ export default function AccGame() {
         <div className="sfondo_acc">
           <h1 style={{ color: "white" }}>HA VINTO {scoreBoard[0][0]}</h1>
           <h1 style={{ color: "white" }}>CLASSIFICA</h1>
-          {scoreBoard.map(player => {
+          {scoreBoard.map((player) => {
             return (
               <p style={{ color: "white" }}>
                 {player[0]} : {player[1]}
@@ -341,7 +341,7 @@ const Timer = ({ setIsTimeOver, setFinishButton }) => {
       return;
     }
     let id = setInterval(() => {
-      setTime(time => time - 1);
+      setTime((time) => time - 1);
     }, 1000);
     return () => clearInterval(id);
   }, [time]);
@@ -351,7 +351,7 @@ const Timer = ({ setIsTimeOver, setFinishButton }) => {
 const Insert = ({ element, setResult }) => {
   const [text, setText] = useState("");
   useEffect(() => {
-    setResult(result => {
+    setResult((result) => {
       return { ...result, [element]: [text, 0] };
     });
   }, [text]);
@@ -361,7 +361,7 @@ const Insert = ({ element, setResult }) => {
         <h2 style={{ color: "white" }}>{element}</h2>
         <TextField
           variant="outlined"
-          onChange={e => setText(e.target.value.toUpperCase())}
+          onChange={(e) => setText(e.target.value.toUpperCase())}
         />
       </Grid>
     </Grid>
