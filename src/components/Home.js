@@ -217,7 +217,7 @@ export default function Home() {
       </Grid>
       <InsertCodeDialog></InsertCodeDialog>
       <ErrorDialog
-        title={"Devi inserire un nickName per poter giocare, dai su :)"}
+        title={"Devi inserire un Nickname per poter giocare, dai su :)"}
       ></ErrorDialog>
     </div>
   );

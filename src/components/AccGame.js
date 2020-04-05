@@ -10,6 +10,7 @@ export default function AccGame() {
   const nickName = Game.nickName;
 
   const [elements, setElements] = useState([]);
+  const [insertEl, setInsertEl] = useState([]);
   const [nuberRound, setNuberRound] = useState(7);
   const [letter, setLetter] = useState();
   const [round, setRound] = useState(1);
@@ -41,6 +42,9 @@ export default function AccGame() {
         if (snapshot.val().results) {
           setGeneralResult(snapshot.val().results);
         }
+        if (snapshot.val().elements) {
+          setElements(snapshot.val().elements);
+        }
       }
     });
   }, []);
@@ -51,6 +55,7 @@ export default function AccGame() {
         console.log("errroe di qulche genere");
       } else {
         setElements(snapshot.val());
+        setInsertEl(snapshot.val());
       }
     });
   }, []);
@@ -146,10 +151,14 @@ export default function AccGame() {
     window.location.reload();
   };
 
+  const changeElements = () => {
+    gameRef.child("elements").set(insertEl);
+  };
+
   switch (gameState) {
     case "tostart":
       return (
-        <div className="sfondo_acc" style={{ position: "fixed" }}>
+        <div className="sfondo_acc">
           {isCreator && gameState === "tostart" ? (
             <React.Fragment>
               <Grid justify="center" container>
@@ -189,6 +198,33 @@ export default function AccGame() {
                     })}
                   </div>
                 </Grid>
+                <Grid item xs={12}>
+                  <div style={{ padding: "10px" }}>
+                    <h1 style={{ color: "white" }}>
+                      Qui sotto puoi cambiare le parole da indovinare! Premi OK
+                      per confermare :)
+                    </h1>
+                    <Grid container>
+                      {elements.map((el, i) => {
+                        return (
+                          <InsertElement
+                            element={el}
+                            number={i}
+                            setInsertEl={setInsertEl}
+                            key={i}
+                          ></InsertElement>
+                        );
+                      })}
+                    </Grid>
+                  </div>
+                </Grid>
+                <Grid item xs={12}>
+                  <div style={{ padding: "10px" }}>
+                    <Button variant="contained" onClick={changeElements}>
+                      OK
+                    </Button>
+                  </div>
+                </Grid>
               </Grid>
             </React.Fragment>
           ) : (
@@ -201,8 +237,8 @@ export default function AccGame() {
                   Pronti per giocare:
                   {players.map((player, i) => {
                     return (
-                      <h3 style={{ color: "blue" }} key={i}>
-                        {player}{" "}
+                      <h3 style={{ color: "orange" }} key={i}>
+                        {player}
                       </h3>
                     );
                   })}
@@ -329,6 +365,24 @@ export default function AccGame() {
       break;
   }
 }
+
+const InsertElement = ({ element, number, setInsertEl }) => {
+  const [text, setText] = useState("");
+  useEffect(() => {
+    if (text != null && text != "")
+      setInsertEl((result) => {
+        let array = result;
+        array[number] = text;
+        return array;
+      });
+  }, [text]);
+  return (
+    <Grid item xs={6} md={4}>
+      <h2 style={{ color: "white" }}>{element}</h2>
+      <TextField variant="outlined" onChange={(e) => setText(e.target.value)} />
+    </Grid>
+  );
+};
 
 const Timer = ({ setIsTimeOver, setFinishButton }) => {
   const [time, setTime] = useState(60);
