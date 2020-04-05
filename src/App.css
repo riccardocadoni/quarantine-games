@@ -54,6 +54,17 @@
   border-style: solid;
   margin: 0 auto;
 }
+.join_game {
+  width: 150px;
+  height: 100px;
+  display: "inline-block";
+  border-radius: 25px;
+  background: tomato;
+  border-width: 8px;
+  border-color: white;
+  border-style: solid;
+  margin: 0 auto;
+}
 .sfondo {
   background: #3399ff;
   width: 100%;
