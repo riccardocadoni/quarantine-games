@@ -6,5 +6,5 @@ This is a personal project where I used React and Firebase to create games to pl
 
 You can choose to play to a 'Trivial Pursuit - like' quiz or the online version of 'Speedy Words' to challenge your friends.
 
-Available here -- [https://quarantinegame.web.app] (https://quarantinegame.web.app)
+Available here -- [https://quarantinegame.web.app](https://quarantinegame.web.app).
 
