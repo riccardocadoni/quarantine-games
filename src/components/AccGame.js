@@ -246,6 +246,14 @@ export default function AccGame() {
               </Grid>
             </Grid>
           )}
+          <Grid justify="center" container>
+            <Grid item xs={12}>
+              <h3>
+                REGOLE: 10 punti ad ogni parola corretta, solo 5 punti se un
+                altro giocatore inserisce la stessa parola. 7 Turni di gioco.
+              </h3>
+            </Grid>
+          </Grid>
         </div>
       );
       break;
@@ -318,14 +326,23 @@ export default function AccGame() {
               gameRef={gameRef}
             ></ResultTable>
             {isCreator ? (
-              <Button
-                style={{ marginTop: "50px" }}
-                onClick={nextRound}
-                variant="contained"
-                color="secondary"
-              >
-                Prossimo Round
-              </Button>
+              <React.Fragment>
+                <h3 style={{ color: "white" }}>
+                  Sei il Giudice! Per assegnare{" "}
+                  <span style={{ color: "green" }}>10</span> punti fai click
+                  sulla casella da valutare, per i{" "}
+                  <span style={{ color: "orange" }}>5</span> punti usa il tasto
+                  destro del mouse (tieni premuto dal telefono)
+                </h3>
+                <Button
+                  style={{ marginTop: "50px" }}
+                  onClick={nextRound}
+                  variant="contained"
+                  color="secondary"
+                >
+                  Prossimo Round
+                </Button>
+              </React.Fragment>
             ) : null}
           </div>
         );
