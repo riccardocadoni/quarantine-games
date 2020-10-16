@@ -275,19 +275,18 @@ export default function TriviaGame() {
   switch (gameState) {
     case "tostart":
       return (
-        <div>
+        <div className="sfondo">
           {isCreator && gameState === "tostart" ? (
             <Grid justify="center" container>
               <Grid item xs={12}>
-                <h1>PREMI IL TASTO START PER INZIARE A GIOCARE</h1>
+                <h1>CLICK START WHEN YOU ARE READY</h1>
                 <h3>
-                  Aspetta che gli altri giocatori siano connessi prima di
-                  cominciare,se no rimarranno fuori!
+                  Wait for other players before starting, otherwise they will be left out!
                 </h3>
               </Grid>
               <Grid item xs={12}>
                 <h1>
-                  CODICE PER INVITARE:
+                  INVITE CODE:
                   <span style={{ color: "orange" }}>{gameId}</span>
                 </h1>
               </Grid>
@@ -308,7 +307,7 @@ export default function TriviaGame() {
               </Grid>
               <Grid item xs={12}>
                 <div style={{ padding: "40px" }}>
-                  Pronti per giocare:
+                  Ready to play:
                   {players.map((player, i) => {
                     return (
                       <h3 style={{ color: "blue" }} key={i}>
@@ -322,11 +321,11 @@ export default function TriviaGame() {
           ) : (
             <Grid justify="center" container>
               <Grid item xs={12}>
-                <h1>ATTENDI L'INIZIO DELLA PARTITA :)</h1>
+                <h1>WAIT FOR THE GAME TO START :)</h1>
               </Grid>
               <Grid item xs={12}>
                 <div style={{ padding: "40px" }}>
-                  Pronti per giocare:
+                  Ready to play:
                   {players.map((player, i) => {
                     return (
                       <h3 style={{ color: "blue" }} key={i}>
@@ -351,7 +350,7 @@ export default function TriviaGame() {
       }
       return (
         <div>
-          <h1 style={{ color: "red" }}>E' IL TUO TURNO!</h1>
+          <h1 style={{ color: "red" }}>IT'S YOUR TURN!</h1>
           <Board board={boardArr} positions={positions}></Board>
           <QuestionDialog
             question={question}
@@ -385,11 +384,11 @@ export default function TriviaGame() {
         <div>
           <Grid justify="center" container>
             <Grid item xs={12}>
-              <p>E' ora di lanciare il dado!</p>
+              <p> It's time to roll the dice!</p>
             </Grid>
             <Grid item xs={12}>
               <Button onClick={rollDice} color="secondary" variant="contained">
-                LANCIA IL DADO!
+                ROLL THE DICE!
               </Button>
             </Grid>
             <Grid item xs={12}>
@@ -412,7 +411,7 @@ export default function TriviaGame() {
     default:
       return (
         <div>
-          {gameState ? <p>E' il turno di {gameState.slice(0, -1)}</p> : null}
+          {gameState ? <p>It's {gameState.slice(0, -1)} turn</p> : null}
           <Board board={boardArr} positions={positions}></Board>
           <ObservQuestionDialog
             obQuestion={obQuestion}
@@ -434,7 +433,7 @@ export default function TriviaGame() {
             handleCloseGame={handleCloseGame}
             setIsErrorDialogOpen={setIsErrorDialogOpen}
           ></WinnerDialog>
-          <p>Codice partita: {gameId}</p>
+          <p>Game code: {gameId}</p>
         </div>
       );
       break;

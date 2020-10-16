@@ -3,7 +3,7 @@ import { Dialog, Button } from "@material-ui/core";
 const ErrorDialog = ({ isErrorDialogOpen, setRedirect }) => {
   return (
     <Dialog open={isErrorDialogOpen}>
-      <p>Non esite la partita che stai cercando, prova a digitare meglio ;)</p>
+      <p>This game does not exists :(</p>
       <Button onClick={() => setRedirect(true)} color="primary">
         OK
       </Button>

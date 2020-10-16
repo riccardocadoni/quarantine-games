@@ -27,8 +27,8 @@ const ResultDialog = ({
           onClose={() => setIsErrorDialogOpen(false)}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">RISPOSTA ESATTA!</DialogTitle>
-          <DialogContent>La risposta corretta è: {decodeAnsw}</DialogContent>
+          <DialogTitle id="form-dialog-title">RIGHT ANSWER!</DialogTitle>
+          <DialogContent>The correct answer is: {decodeAnsw}</DialogContent>
           <DialogActions>
             <Button
               onClick={() => {
@@ -53,8 +53,8 @@ const ResultDialog = ({
           onClose={() => setIsErrorDialogOpen(false)}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">RISPOSTA ERRATA :(</DialogTitle>
-          <DialogContent>La risposta corretta è: {decodeAnsw}</DialogContent>
+          <DialogTitle id="form-dialog-title">WRONG ANSWER :(</DialogTitle>
+          <DialogContent>The correct answer is: {decodeAnsw}</DialogContent>
           <DialogActions>
             <Button
               onClick={() => {

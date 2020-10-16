@@ -94,7 +94,7 @@ export default function Home() {
         <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
         <DialogActions>
           <Button onClick={() => setIsErrorDialogOpen(false)} color="primary">
-            Ho capito..non lo faccio più :(
+            Ok
           </Button>
         </DialogActions>
       </Dialog>
@@ -109,14 +109,14 @@ export default function Home() {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          Inserisci il codice della partita a cui vuoi partecipare :)
+          Insert here the code to join :)
         </DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="Esempio.. KWR3"
+            label="Example.. KWR3"
             type="codes"
             fullWidth
             onChange={(e) => setTextId(e.target.value.toUpperCase())}
@@ -127,10 +127,10 @@ export default function Home() {
             onClick={() => setIsJoinGameDialogOpen(false)}
             color="secondary"
           >
-            Annulla
+            Cancel
           </Button>
           <Button onClick={() => handleDialogSave(textId)} color="primary">
-            VAI!
+            GO!
           </Button>
         </DialogActions>
       </Dialog>
@@ -148,7 +148,7 @@ export default function Home() {
     return (
       <div className="create_trivia" onClick={() => createGame("Acc")}>
         <h2>
-          ANIMALS,<br></br>THINGS..
+          SPEEDY WORDS
         </h2>
       </div>
     );
@@ -163,7 +163,7 @@ export default function Home() {
 
   return (
     <div className="sfondo">
-      <h1 style={{ color: "white" }}>QUARANTINE'S GAMES</h1>
+      <h1 style={{ color: "white", marginTop: '0px' }}>QUARANTINE GAMES</h1>
       <Grid justify="center" container>
         <Grid item xs={4} style={{ marginTop: "20px" }}>
           <TextField
@@ -173,7 +173,7 @@ export default function Home() {
             fullWidth
             onChange={(e) => Game.setNickName(e.target.value.toUpperCase())}
             name="nickname"
-            label="Inserisci il tuo nickName"
+            label="Your Nickname"
             type="nickname"
             id="nickname"
             autoComplete="current-nickname"
@@ -217,42 +217,8 @@ export default function Home() {
       </Grid>
       <InsertCodeDialog></InsertCodeDialog>
       <ErrorDialog
-        title={"Devi inserire un Nickname per poter giocare, dai su :)"}
+        title={"You have to insert a nickname!!"}
       ></ErrorDialog>
     </div>
   );
 }
-
-/* const updateBoard = () => {
-    const boardRef = firebase.database().ref("board1/");
-    const board = [
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      0,
-      1,
-      7
-    ];
-    boardRef.set(board);
-  };
-
-  updateBoard();
- */

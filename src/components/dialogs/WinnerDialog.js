@@ -13,7 +13,7 @@ const WinnerDialog = ({
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle id="form-dialog-title">
-        HA VINTO LA PARTITA {winner}!!!
+        {winner} WINS THE GAME!!!
       </DialogTitle>
       <DialogActions>
         <Button onClick={handleCloseGame} variant="contained" color="primary">

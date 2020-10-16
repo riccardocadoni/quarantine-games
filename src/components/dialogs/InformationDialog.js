@@ -4,7 +4,7 @@ const InformationDialog = ({ isInfoDialogOpen, setIsInfoDialogOpen }) => {
   return (
     <Dialog open={isInfoDialogOpen} aria-labelledby="form-dialog-title">
       <DialogTitle>
-        Questa casella di fa andare indietro di due posizioni :(
+        Go back of two boxes!
       </DialogTitle>
       <DialogActions>
         <Button onClick={() => setIsInfoDialogOpen(false)}>OK</Button>

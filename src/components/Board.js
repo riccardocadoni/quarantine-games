@@ -76,17 +76,3 @@ const Card = (props) => {
     </Grid>
   );
 };
-
-/* {color === "grey" ? (
-  <h1 style={{ color: "white" }}>-2</h1>
-) : (
-  props.players.map((player, i) => {
-    return (
-      <React.Fragment key={i}>
-        <Grid item xs={6} className="player_in_card">
-          {player}
-        </Grid>
-      </React.Fragment>
-    );
-  })
-)} */

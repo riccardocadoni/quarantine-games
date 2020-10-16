@@ -63,7 +63,7 @@ export default function AccGame() {
     const gameRef = firebase.database().ref("games/" + gameId);
     gameRef.once("value", function (snapshot) {
       if (!snapshot.val()) {
-        console.log("errroe di qulche genere");
+        console.log("general error");
         //setIsErrorDialogOpen(true);
       } else {
         if (nickName !== snapshot.val().creator) {
@@ -158,22 +158,21 @@ export default function AccGame() {
   switch (gameState) {
     case "tostart":
       return (
-        <div className="sfondo_acc">
+        <div className="sfondo_triv">
           {isCreator && gameState === "tostart" ? (
             <React.Fragment>
               <Grid justify="center" container>
                 <Grid item xs={12}>
                   <h1 style={{ color: "white" }}>
-                    PREMI IL TASTO START PER INZIARE A GIOCARE
+                  CLICK START WHEN YOU ARE READY
                   </h1>
                   <h3 style={{ color: "white" }}>
-                    Aspetta che gli altri giocatori siano connessi prima di
-                    cominciare,se no rimarranno fuori!
+                  Wait for other players before starting, otherwise they will be left out!
                   </h3>
                 </Grid>
                 <Grid item xs={12}>
                   <h1 style={{ color: "white" }}>
-                    CODICE PER INVITARE:
+                  INVITE CODE:
                     <span style={{ color: "orange" }}> {gameId}</span>
                   </h1>
                 </Grid>
@@ -188,7 +187,7 @@ export default function AccGame() {
                 </Grid>
                 <Grid item xs={12}>
                   <div style={{ padding: "40px", color: "white" }}>
-                    Pronti per giocare:
+                  Ready to play:
                     {players.map((player, i) => {
                       return (
                         <h3 style={{ color: "orange" }} key={i}>
@@ -201,8 +200,7 @@ export default function AccGame() {
                 <Grid item xs={12}>
                   <div style={{ padding: "10px" }}>
                     <h1 style={{ color: "white" }}>
-                      Qui sotto puoi cambiare le parole da indovinare! Premi OK
-                      per confermare :)
+                      Here you can change the words to guess!
                     </h1>
                     <Grid container>
                       {elements.map((el, i) => {
@@ -230,11 +228,11 @@ export default function AccGame() {
           ) : (
             <Grid justify="center" container>
               <Grid item xs={12}>
-                <h1>ATTENDI L'INIZIO DELLA PARTITA :)</h1>
+                <h1>WAIT FOR THE GAME TO START :)</h1>
               </Grid>
               <Grid item xs={12}>
                 <div style={{ padding: "40px" }}>
-                  Pronti per giocare:
+                Ready to play:
                   {players.map((player, i) => {
                     return (
                       <h3 style={{ color: "orange" }} key={i}>
@@ -249,8 +247,8 @@ export default function AccGame() {
           <Grid justify="center" container>
             <Grid item xs={12}>
               <h3>
-                REGOLE: 10 punti ad ogni parola corretta, solo 5 punti se un
-                altro giocatore inserisce la stessa parola. 7 Turni di gioco.
+                RULES: 10 points for every correct word, only 5 points if any other player puts the same word.
+                7 game rounds.
               </h3>
             </Grid>
           </Grid>
@@ -260,10 +258,10 @@ export default function AccGame() {
     case "writing":
       return (
         <div className="sfondo_acc">
-          <h1 style={{ color: "white" }}>Animali cose e città</h1>
+          <h1 style={{ color: "white" }}>Speedy Words</h1>
           <Grid justify="center" container>
             <Grid item xs={6}>
-              <h1 style={{ color: "orange" }}>LETTERA: {letter}</h1>
+              <h1 style={{ color: "orange" }}>LETTER: {letter}</h1>
             </Grid>
             <Grid item xs={6}>
               <Timer
@@ -298,7 +296,7 @@ export default function AccGame() {
               }, 5000);
             }}
           >
-            FINITO
+            FINISHED
           </Button>
         </div>
       );
@@ -309,7 +307,7 @@ export default function AccGame() {
         let scoreBoard = calculateScoreBoard();
         return (
           <div className="sfondo_acc">
-            <h1 style={{ color: "white" }}>CLASSIFICA</h1>
+            <h1 style={{ color: "white" }}>SCOREBOARD</h1>
             {scoreBoard.map((player) => {
               return (
                 <p style={{ color: "white" }}>
@@ -328,34 +326,33 @@ export default function AccGame() {
             {isCreator ? (
               <React.Fragment>
                 <h3 style={{ color: "white" }}>
-                  Sei il Giudice! Per assegnare{" "}
-                  <span style={{ color: "green" }}>10</span> punti fai click
-                  sulla casella da valutare, per i{" "}
-                  <span style={{ color: "orange" }}>5</span> punti usa il tasto
-                  destro del mouse (tieni premuto dal telefono)
+                  You are the judge! To assign
+                  <span style={{ color: "green" }}> 10</span> points click on the box to be evaluated.
+                  To assign
+                  <span style={{ color: "orange" }}> 5</span> points right click (long click from mobile)
                 </h3>
                 <Button
-                  style={{ marginTop: "50px" }}
+                  style={{ marginTop: "50px", marginBottom: "50px" }}
                   onClick={nextRound}
                   variant="contained"
                   color="secondary"
                 >
-                  Prossimo Round
+                  Next Round
                 </Button>
               </React.Fragment>
             ) : null}
           </div>
         );
       }
-      return <p>attendi</p>;
+      return <p>Wait</p>;
       break;
 
     case "winner":
       let scoreBoard = calculateScoreBoard();
       return (
         <div className="sfondo_acc">
-          <h1 style={{ color: "white" }}>HA VINTO {scoreBoard[0][0]}</h1>
-          <h1 style={{ color: "white" }}>CLASSIFICA</h1>
+          <h1 style={{ color: "white" }}>{scoreBoard[0][0]} WINS</h1>
+          <h1 style={{ color: "white" }}>SCOREBOARD</h1>
           {scoreBoard.map((player) => {
             return (
               <p style={{ color: "white" }}>
@@ -368,14 +365,14 @@ export default function AccGame() {
             variant="contained"
             color=" secondary"
           >
-            NUOVA PARTITA
+            NEW GAME
           </Button>
         </div>
       );
       break;
     default:
       return (
-        <div className="sfondo">
+        <div className="sfondo_acc">
           <h1 style={{ color: "white" }}>LOADING..</h1>
         </div>
       );
